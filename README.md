@@ -17,7 +17,8 @@ Often, all you want are totals and general statistics. To get these figures, sim
     "minCiviliansKilled": 613,
     "minInjured": 1557,
     "minKilled": 5819,
-    "totalDroneStrikes": 1092
+    "totalDroneStrikes": 1092,
+    "updated": "2017-06-13 04:26:33"
 }
 ```
 
@@ -25,18 +26,30 @@ Often, all you want are totals and general statistics. To get these figures, sim
 To get a list of all the strikes, navigate to `/summary`. You'll get an unabridged version of the following data back:
 
 ```
-[
-    "YEM139",
-    "YEM138",
-    "AFG208",
-    "AFG209",
-    "AFG204",
-    "AFG205",
-    "AFG206",
-    "AFG207",
-    ...
-    "AFG252"
-]
+{
+    "strikes": [
+        "YEM139",
+        "YEM138",
+        "AFG208",
+        ...
+        "AFG345",
+        "AFG347",
+        "AFG346",
+        "AFG252"
+    ],
+    "totals": {
+        "maxChildrenKilled": 261,
+        "maxCiviliansKilled": 1299,
+        "maxInjured": 2349,
+        "maxKilled": 8424,
+        "minChildrenKilled": 202,
+        "minCiviliansKilled": 613,
+        "minInjured": 1557,
+        "minKilled": 5819,
+        "totalDroneStrikes": 1092
+    },
+    "updated": "2017-06-13 04:26:33"
+}
 ```
 
 ### Getting Data on a Particular Strike
