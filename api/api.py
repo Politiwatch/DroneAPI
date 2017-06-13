@@ -32,8 +32,11 @@ class StrikeHandler(tornado.web.RequestHandler):
         self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
 class SummaryHandler(tornado.web.RequestHandler):
     def get(self):
-        data = strike_manager.summary
-        data["updated"] = starttime
+        data = {
+            "strikes": strike_manager.summary,
+            "totals": strike_manager.totals,
+            "updated": strike_manager.starttime
+        }
         self.set_header("Content-Type", "application/json")
         self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
 class TotalsHandler(tornado.web.RequestHandler):
