@@ -7,7 +7,7 @@ Using the DroneAPI is simple. All you need to do is navigate your code to a vali
 
 ### User Interface
 DroneAPI comes with a wonderful built-in interface for basic data exploration. It's visible at the document root, `/`.
-![The interface!](interface.html)
+![The interface!](interface.png)
 
 ### Getting Totals
 Often, all you want are totals and general statistics. To get these figures, simply navigate to `/totals`. You'll get back data which looks like the following:
