@@ -1,8 +1,31 @@
 function loadStrike() {
   var strike = $("#selectedstrike").val();
   $(".loading").fadeIn();
-  $.get("https://tbij.dronescout.org/strike?strike=" + strike, function(data, status) {
-    $(".loading").fadeOut();
-    alert("Data: " + data + "\nStatus: " + status);
+  $.ajax({
+  	// put your own URL below!
+    url: "https://tbij.dronescout.org:8888/strike?strike=" + strike,
+    type: "GET",
+    dataType: "json",
+    timeout: 3000,
+    success: function(data, status, jqXHR) {
+      $(".loading").fadeOut();
+      $(".strike-index").text(data.index)
+      $(".strike-date").text(data.date)
+      $(".strike-minkilled").text(data.minKilled)
+      $(".strike-maxkilled").text(data.maxKilled)
+      $(".strike-location").text(data.location)
+      $(".strike-type").text(data.type)
+      $(".strike-json").html(jqXHR.responseText)
+      $(".strike-apiurl").attr("href", "/strike?strike=" + data.index)
+      var body = data.body
+      if(data.body == null){
+        body = "<i>No description available.</i>"
+      }
+      $(".strike-description").html(body)
+    },
+    error: function(xmlhttprequest, textstatus, message) {
+        $(".loading").fadeOut();
+        alert("Unable to complete your request: " + message)
+    }
   });
 }

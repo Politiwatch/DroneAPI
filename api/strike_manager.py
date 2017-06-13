@@ -5,6 +5,7 @@ import pk_processor
 import sm_processor
 import json
 import requests
+from dateutil import parser
 from StringIO import StringIO
 
 tbij_sources = [
@@ -30,6 +31,7 @@ def gsheet_buffer(key, id):
 
 strikes = {}
 summary = []
+latest_strike = {}
 totals = {
     "minKilled": 0,
     "maxKilled": 0,
@@ -50,7 +52,7 @@ def indexify(l): # indexify a list of strikes
     return indexed
 
 def load_data():
-    global strikes, totals, summary
+    global strikes, totals, summary, latest_strike
     loaded_strikes = []
     loaded_strikes_indices = []
     for source in tbij_sources:
@@ -105,6 +107,8 @@ def load_data():
             totals["totalDroneStrikes"] += strike['supplemental']['minStrikes']
         else:
             totals['totalDroneStrikes'] += 1
+    latest_strike = sorted(strikes.itervalues(), key=lambda k: parser.parse(k['date']), reverse=True)[0]
+    print latest_strike
 
 
 

@@ -15,8 +15,8 @@ def error(response, code, message):
         "code": code,
         "issue": message
     }
+    response.set_header("Access-Control-Allow-Origin", "*")
     response.finish(json.dumps(data, indent=4, sort_keys=True))
-
 class StrikeHandler(tornado.web.RequestHandler):
     def get(self):
         if "strike" not in self.request.arguments:
@@ -27,6 +27,13 @@ class StrikeHandler(tornado.web.RequestHandler):
             error(self, 400, "no such strike")
             return
         data = strike_manager.strikes[strike]
+        data["updated"] = starttime
+        self.set_header("Content-Type", "application/json")
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
+class LatestHandler(tornado.web.RequestHandler):
+    def get(self):
+        data = strike_manager.latest_strike
         data["updated"] = starttime
         self.set_header("Content-Type", "application/json")
         self.set_header("Access-Control-Allow-Origin", "*")
@@ -50,7 +57,8 @@ class DataHandler(tornado.web.RequestHandler):
         self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
 class GuiHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("gui/index.html", totals=strike_manager.totals, summary=strike_manager.summary)
+        print strike_manager.latest_strike
+        self.render("pages/index.html", totals=strike_manager.totals, summary=strike_manager.summary, updated=starttime, latest=strike_manager.latest_strike, latest_json=json.dumps(strike_manager.latest_strike, indent=4))
         self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
 class TotalsHandler(tornado.web.RequestHandler):
     def get(self):
@@ -88,15 +96,21 @@ class IndexHandler(tornado.web.RequestHandler):
                     "exampleUrl": "https://tbij.dronescout.org/summary"
                 },
                 {
+                    "endpoint": "/latest",
+                    "parameters": [],
+                    "description": "get the latest strike",
+                    "exampleUrl": "https://tbij.dronescout.org/latest"
+                },
+                {
                     "endpoint": "/totals",
                     "parameters": [],
                     "description": "get the various totals (i.e. total killed, total civilians killed, etc)",
                     "exampleUrl": "https://tbij.dronescout.org/totals"
                 },
                 {
-                    "endpoint": "/",
+                    "endpoint": "/api",
                     "parameters": [],
-                    "description": "index",
+                    "description": "this index page",
                     "exampleUrl": "https://tbij.dronescout.org/"
                 },
             ],
@@ -115,6 +129,7 @@ application = tornado.web.Application([
     (r"/api", IndexHandler),
     (r"/", GuiHandler),
     (r"/summary", SummaryHandler),
+    (r"/latest", LatestHandler),
     (r"/strike", StrikeHandler),
     (r"/totals", TotalsHandler),
     (r"/data", DataHandler),

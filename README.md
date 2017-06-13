@@ -4,6 +4,11 @@ An automatic restful API for the Bureau of Investigative Journalism's "Drone War
 ## How to Use
 Using the DroneAPI is simple. All you need to do is navigate your code to a valid instance (I personally recommend the Politiwatch-maintained instance at https://tbij.dronescout.org) and you'll be set! The root endpoint should provide you all the information you need to get started. If that's not enough, please refer to the endpoint documentation below.
 
+
+### User Interface
+DroneAPI comes with a wonderful built-in interface for basic data exploration. It's visible at the document root, `/`.
+![The interface!](interface.html)
+
 ### Getting Totals
 Often, all you want are totals and general statistics. To get these figures, simply navigate to `/totals`. You'll get back data which looks like the following:
 
@@ -88,6 +93,9 @@ To get the detailed data on a particular strike, navigate to `/strike` and inclu
 }
 ```
 *Note that only strikes which took place after 1 Jan 2017 will have a non-null body.*
+
+### Getting the Latest Strike
+To get the latest strike, simply navigate to the endpoint `/latest`. You will be presented with the data of the latest strike in the same format as the `strike` endpoint.
 
 ## How to Deploy Yourself
 Run `api.py` with the working directory set to wherever you'd like the backup data (`strikes.json`) to be saved to. The server will start on port `8888` automatically. Remember to update `strikeloader.js` so that your API's URL is loaded instead!
