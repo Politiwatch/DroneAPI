@@ -29,6 +29,7 @@ class StrikeHandler(tornado.web.RequestHandler):
         data = strike_manager.strikes[strike]
         data["updated"] = starttime
         self.set_header("Content-Type", "application/json")
+        self.set_header("Access-Control-Allow-Origin", "*")
         self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
 class SummaryHandler(tornado.web.RequestHandler):
     def get(self):
@@ -38,6 +39,16 @@ class SummaryHandler(tornado.web.RequestHandler):
             "updated": starttime
         }
         self.set_header("Content-Type", "application/json")
+        self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
+class DataHandler(tornado.web.RequestHandler):
+    def get(self):
+        data = strike_manager.strikes
+        data['updated'] = starttime
+        self.set_header("Content-Type", "application/json")
+        self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
+class GuiHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("gui/index.html", totals=strike_manager.totals, summary=strike_manager.summary)
         self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
 class TotalsHandler(tornado.web.RequestHandler):
     def get(self):
@@ -97,10 +108,13 @@ print "Backing up data..."
 strike_manager.write_data("strikes.json")
 print "Assembling API..."
 application = tornado.web.Application([
-    (r"/", IndexHandler),
+    (r"/api", IndexHandler),
+    (r"/", GuiHandler),
     (r"/summary", SummaryHandler),
     (r"/strike", StrikeHandler),
-    (r"/totals", TotalsHandler)
+    (r"/totals", TotalsHandler),
+    (r"/data", DataHandler),
+    (r'/assets/(.*)$', tornado.web.StaticFileHandler, {'path': "pages/assets"})
     ])
 print "Going online with data as of " + starttime
 if __name__ == "__main__":

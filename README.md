@@ -90,4 +90,4 @@ To get the detailed data on a particular strike, navigate to `/strike` and inclu
 *Note that only strikes which took place after 1 Jan 2017 will have a non-null body.*
 
 ## How to Deploy Yourself
-Run `api.py` with the working directory set to wherever you'd like the backup data (`strikes.json`) to be saved to. The server will start on port `8888` automatically.
+Run `api.py` with the working directory set to wherever you'd like the backup data (`strikes.json`) to be saved to. The server will start on port `8888` automatically. Remember to update `strikeloader.js` so that your API's URL is loaded instead!
