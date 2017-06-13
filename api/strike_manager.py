@@ -81,6 +81,10 @@ def load_data():
             strike['stats'] = loaded_strikes[strike['index'].upper()]['stats']
             strike['references'].extend(loaded_strikes[strike['index'].upper()]['references'])
         strikes[strike['index'].upper()] = strike
+    # normalize locations
+    for strikekey in strikes:
+        strike = strikes[strikekey]
+        strike['location'] = ", ".join([field.strip() for field in strike['location'].split(",") if field.strip() != '-' and field.strip().lower() != "unknown"])
     summary = [strike for strike in strikes]
     for strike in strikes.values():
         totals['minKilled'] += strike['minKilled']
