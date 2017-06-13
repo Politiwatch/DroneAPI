@@ -6,7 +6,7 @@ function loadStrike() {
     url: "https://tbij.dronescout.org:8888/strike?strike=" + strike,
     type: "GET",
     dataType: "json",
-    timeout: 3000,
+    timeout: 10000,
     success: function(data, status, jqXHR) {
       $(".loading").fadeOut();
       $(".strike-index").text(data.index)
