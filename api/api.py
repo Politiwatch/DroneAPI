@@ -35,7 +35,7 @@ class SummaryHandler(tornado.web.RequestHandler):
         data = {
             "strikes": strike_manager.summary,
             "totals": strike_manager.totals,
-            "updated": strike_manager.starttime
+            "updated": starttime
         }
         self.set_header("Content-Type", "application/json")
         self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
