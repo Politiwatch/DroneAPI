@@ -3,7 +3,7 @@ function loadStrike() {
   $(".loading").fadeIn();
   $.ajax({
   	// put your own URL below!
-    url: "https://tbij.dronescout.org:8888/strike?strike=" + strike,
+    url: "https://tbij.dronescout.org/strike?strike=" + strike,
     type: "GET",
     dataType: "json",
     timeout: 10000,
