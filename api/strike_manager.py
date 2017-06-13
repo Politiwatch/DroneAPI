@@ -110,4 +110,4 @@ def load_data():
 
 def write_data(filepath):
     with open(filepath, "w") as outfile:
-        json.dump(strikes, outfile)
+        json.dump(strikes, outfile, sort_keys=True, indent=4)
