@@ -38,10 +38,12 @@ class IndexHandler(tornado.web.RequestHandler):
     def get(self):
         out = {
             "creator": "Politiwatch",
+            "api": "DroneAPI (RESTFUL)"
             "url": "tbij.dronescout.org",
             "license": "CC-BY",
             "notes": "This tool only includes DRONE STRIKE DATA. The tool IGNORES other covert actions. Please keep this in mind when comparing data to other aggregations.",
-            "source": "The Bureau of Investigative Journalism (https://www.thebureauinvestigates.com/projects/drone-war)",
+            "credit": "The Bureau of Investigative Journalism (https://www.thebureauinvestigates.com/projects/drone-war)",
+            "source": "https://github.com/Politiwatch/DroneAPI",
             "endpoints": [
                 {
                     "endpoint": "/strike",
