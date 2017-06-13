@@ -70,7 +70,7 @@ To get the detailed data on a particular strike, navigate to `/strike` and inclu
         "usaConfirmed": false,
         "usaIsOnlySource": false
     },
-    "type": "US strike"
+    "type": "US strike",
 }
 ```
 *Note that only strikes which took place after 1 Jan 2017 will have a non-null body.*

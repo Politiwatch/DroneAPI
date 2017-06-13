@@ -2,6 +2,9 @@ import tornado.ioloop
 import tornado.web
 import json
 import strike_manager
+from time import gmtime, strftime
+
+starttime = str(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
 def error(response, code, message):
     response.clear()
@@ -24,16 +27,21 @@ class StrikeHandler(tornado.web.RequestHandler):
             error(self, 400, "no such strike")
             return
         data = strike_manager.strikes[strike]
+        data["updated"] = starttime
         self.set_header("Content-Type", "application/json")
         self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
 class SummaryHandler(tornado.web.RequestHandler):
     def get(self):
+        data = strike_manager.summary
+        data["updated"] = starttime
         self.set_header("Content-Type", "application/json")
-        self.write(unicode(json.dumps(strike_manager.summary, sort_keys=True, indent=4)))
+        self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
 class TotalsHandler(tornado.web.RequestHandler):
     def get(self):
+        data = strike_manager.totals
+        data["updated"] = starttime
         self.set_header("Content-Type", "application/json")
-        self.write(unicode(json.dumps(strike_manager.totals, sort_keys=True, indent=4)))
+        self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
         out = {
@@ -73,8 +81,9 @@ class IndexHandler(tornado.web.RequestHandler):
                     "parameters": [],
                     "description": "index",
                     "exampleUrl": "https://tbij.dronescout.org/"
-                }
-            ]
+                },
+            ],
+            "updated": starttime
         }
         self.set_header("Content-Type", "application/json")
         self.write(unicode(json.dumps(out, sort_keys=True, indent=4)))
@@ -90,7 +99,7 @@ application = tornado.web.Application([
     (r"/strike", StrikeHandler),
     (r"/totals", TotalsHandler)
     ])
-print "Going online!"
+print "Going online with data as of " + starttime
 if __name__ == "__main__":
     application.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
