@@ -59,7 +59,6 @@ class GuiHandler(tornado.web.RequestHandler):
     def get(self):
         print strike_manager.latest_strike
         self.render("pages/index.html", totals=strike_manager.totals, summary=strike_manager.summary, updated=starttime, latest=strike_manager.latest_strike, latest_json=json.dumps(strike_manager.latest_strike, indent=4))
-        self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
 class TotalsHandler(tornado.web.RequestHandler):
     def get(self):
         data = strike_manager.totals
