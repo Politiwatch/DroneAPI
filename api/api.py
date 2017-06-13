@@ -38,12 +38,15 @@ class SummaryHandler(tornado.web.RequestHandler):
             "totals": strike_manager.totals,
             "updated": starttime
         }
+        self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Content-Type", "application/json")
         self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
 class DataHandler(tornado.web.RequestHandler):
     def get(self):
         data = strike_manager.strikes
         data['updated'] = starttime
+                self.set_header("Access-Control-Allow-Origin", "*")
+
         self.set_header("Content-Type", "application/json")
         self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
 class GuiHandler(tornado.web.RequestHandler):
@@ -54,6 +57,7 @@ class TotalsHandler(tornado.web.RequestHandler):
     def get(self):
         data = strike_manager.totals
         data["updated"] = starttime
+                self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Content-Type", "application/json")
         self.write(unicode(json.dumps(data, sort_keys=True, indent=4)))
 class IndexHandler(tornado.web.RequestHandler):
@@ -99,6 +103,7 @@ class IndexHandler(tornado.web.RequestHandler):
             ],
             "updated": starttime
         }
+        self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Content-Type", "application/json")
         self.write(unicode(json.dumps(out, sort_keys=True, indent=4)))
 print "Loading data..."
