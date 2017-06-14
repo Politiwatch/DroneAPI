@@ -87,7 +87,6 @@ def load_data():
     for strikekey in strikes:
         strike = strikes[strikekey]
         strike['location'] = ", ".join([field.strip() for field in strike['location'].split(",") if field.strip() != '-' and field.strip().lower() != "unknown"])
-    summary = [strike for strike in strikes]
     for strike in strikes.values():
         totals['minKilled'] += strike['minKilled']
         totals['maxKilled'] += strike['maxKilled']
@@ -107,7 +106,8 @@ def load_data():
             totals["totalDroneStrikes"] += strike['supplemental']['minStrikes']
         else:
             totals['totalDroneStrikes'] += 1
-    latest_strike = sorted(strikes.itervalues(), key=lambda k: parser.parse(k['date']), reverse=True)[0]
+    summary = sorted(strikes.iterkeys(), key=lambda k: parser.parse(strikes[k]['date']), reverse=True)
+    latest_strike = strikes[summary[0]]
     print latest_strike
 
 
