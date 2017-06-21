@@ -1,3 +1,5 @@
 
 *.pyc
 .DS_Store
+api/pages/assets/strikes.csv
+api/strikes.json
