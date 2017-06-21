@@ -2,8 +2,7 @@ function loadStrike() {
   var strike = $("#selectedstrike").val();
   $(".loading").fadeIn();
   $.ajax({
-  	// put your own URL below!
-    url: "https://tbij.dronescout.org/strike?strike=" + strike,
+    url: "/strike?strike=" + strike,
     type: "GET",
     dataType: "json",
     timeout: 10000,
@@ -29,3 +28,7 @@ function loadStrike() {
     }
   });
 }
+
+$('#export-form .input-daterange').datepicker({
+  todayHighlight: true
+});

@@ -3,8 +3,16 @@ import tornado.web
 import json
 import strike_manager
 from time import gmtime, strftime
+import sys
+from datetime import date
+import dateutil
+import csv
 
 starttime = str(strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+
+source = "TBIJ"
+source_long = "The Bureau of Investigative Journalism"
+source_url = "https://www.thebureauinvestigates.com/projects/drone-war"
 
 def error(response, code, message):
     response.clear()
@@ -58,7 +66,10 @@ class DataHandler(tornado.web.RequestHandler):
 class GuiHandler(tornado.web.RequestHandler):
     def get(self):
         print strike_manager.latest_strike
-        self.render("pages/index.html", totals=strike_manager.totals, summary=strike_manager.summary, updated=starttime, latest=strike_manager.latest_strike, latest_json=json.dumps(strike_manager.latest_strike, indent=4))
+        mm = date.today().month
+        dd = date.today().day
+        yyyy = date.today().year
+        self.render("pages/index.html", mm=mm, dd=dd, yyyy=yyyy, source=source, source_long=source_long, source_url=source_url, totals=strike_manager.totals, summary=strike_manager.summary, updated=starttime, latest=strike_manager.latest_strike, latest_json=json.dumps(strike_manager.latest_strike, indent=4))
 class TotalsHandler(tornado.web.RequestHandler):
     def get(self):
         data = strike_manager.totals
@@ -118,11 +129,55 @@ class IndexHandler(tornado.web.RequestHandler):
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Content-Type", "application/json")
         self.write(unicode(json.dumps(out, sort_keys=True, indent=4)))
-print "Loading data..."
-strike_manager.load_data()
+
+def generate_csv():
+    with open("pages/assets/strikes.csv", "wb") as strikecsv:
+        writer = csv.writer(strikecsv, quoting=csv.QUOTE_ALL)
+        writer.writerow(["INDEX", "DATE", "TYPE", "LOCATION", "MAX KILLED", "MIN KILLED", "MAX CHILDREN KILLED", "MIN CHILDREN KILLED", "MAX CIVILIANS KILLED", "MIN CIVILIANS KILLED", "MAX INJURIES", "MIN INJURIES"])
+        for strike in sorted(strike_manager.strikes.values(), key=lambda k: dateutil.parser.parse(k['date'])):
+            # INDEX, DATE, TYPE, LOCATION, MAX KILLED, MIN KILLED, MAX CHILDREN KILLED, MIN CHILDREN KILLED, MAX CIVILIANS KILLED, MIN CIVILIANS KILLED, MAX INJURIES, MIN INJURIES
+            _index = strike['index']
+            _date = strike['date']
+            _type = strike['type']
+            _location = strike['location']
+            _maxkilled = strike['maxKilled']
+            _minkilled = strike['minKilled']
+            _maxchildren = ""
+            if 'maxChildrenKilled' in strike['supplemental']:
+                _maxchildren = strike['supplemental']['maxChildrenKilled']
+            _minchildren = ""
+            if 'minChildrenKilled' in strike['supplemental']:
+                _minchildren = strike['supplemental']['minChildrenKilled']
+            _maxcivilians = ""
+            if 'maxCiviliansKilled' in strike['supplemental']:
+                _maxcivilians = strike['supplemental']['maxCiviliansKilled']
+            _mincivilians = ""
+            if 'minCiviliansKilled' in strike['supplemental']:
+                _mincivilians = strike['supplemental']['minCiviliansKilled']
+            _maxinjuries = ""
+            if 'maxInjured' in strike['supplemental']:
+                _maxinjuries = strike['supplemental']['maxInjured']
+            _mininjuries = ""
+            if 'minInjured' in strike['supplemental']:
+                _mininjuries = strike['supplemental']['minInjured']
+            writer.writerow([_index, _date, _type, _location, _maxkilled, _minkilled, _maxchildren, _minchildren, _maxcivilians, _mincivilians, _maxinjuries, _mininjuries])
+        strikecsv.close()
+
+if "offline" in sys.argv:
+    print "Loading from backup..."
+    starttime = strike_manager.restore_data("strikes.json")
+else:
+    try:
+        print "Loading data from online sources..."
+        strike_manager.load_data()
+        print "Backing up data..."
+        strike_manager.write_data("strikes.json", starttime)
+    except:
+        print "Unable to load data from external sources, falling back to old data!"
+        starttime = strike_manager.restore_data("strikes.json")
 print strike_manager.totals
-print "Backing up data..."
-strike_manager.write_data("strikes.json")
+print "Assembling CSV..."
+generate_csv()
 print "Assembling API..."
 application = tornado.web.Application([
     (r"/api", IndexHandler),

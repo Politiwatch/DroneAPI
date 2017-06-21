@@ -7,6 +7,7 @@ import json
 import requests
 from dateutil import parser
 from StringIO import StringIO
+import os
 
 tbij_sources = [
     "https://www.thebureauinvestigates.com/drone-war/data/get-the-data-a-list-of-us-air-and-drone-strikes-afghanistan-2017",
@@ -32,6 +33,7 @@ def gsheet_buffer(key, id):
 strikes = {}
 summary = []
 latest_strike = {}
+
 totals = {
     "minKilled": 0,
     "maxKilled": 0,
@@ -111,7 +113,25 @@ def load_data():
     print latest_strike
 
 
+def restore_data(filepath):
+    global strikes, summary, latest_strike, totals
+    if not os.path.exists(filepath):
+        raise EnvironmentError("No backup file at '" + filepath + "' to load from!")
+    with open(filepath, "r") as infile:
+        data = json.load(infile)
+        strikes = data['strikes']
+        summary = data['summary']
+        latest_strike = data['latest_strike']
+        totals = data['totals']
+        return data['updated']
 
-def write_data(filepath):
+def write_data(filepath, updated):
+    outdata = {
+        "strikes": strikes,
+        "summary": summary,
+        "latest_strike": latest_strike,
+        "totals": totals,
+        "updated": updated
+    }
     with open(filepath, "w") as outfile:
-        json.dump(strikes, outfile, sort_keys=True, indent=4)
+        json.dump(outdata, outfile, sort_keys=True, indent=4)
