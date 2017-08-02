@@ -1,5 +1,5 @@
 # DroneAPI
-An automatic restful API for the Bureau of Investigative Journalism's "Drone War" data. **This tool only processes DRONE STRIKES, not all covert U.S. actions.**
+An automatic restful API for the Bureau of Investigative Journalism's "Drone War" data. **This tool only processes DRONE STRIKES, not all covert U.S. actions.** *Unconfirmed actions are included.*
 
 ## How to Use
 Using the DroneAPI is simple. All you need to do is navigate your code to a valid instance (I personally recommend the Politiwatch-maintained instance at https://tbij.dronescout.org) and you'll be set! The root endpoint should provide you all the information you need to get started. If that's not enough, please refer to the endpoint documentation below.
